@@ -22,6 +22,8 @@ function getRandom10(min, max) {
 var pos_player={}
 var pos_fruit={f_x:getRandom10(-10,500),f_y:getRandom10(-10,500)}
 io.on("connection",(socket)=>{
+
+    
     console.log('connectado: '+socket.id)
     socket.on("eat",(eat)=>{
         console.log(eat)
