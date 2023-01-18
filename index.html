@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>GAME</h1>
-    <canvas id="canvas" width="500" height="500" style="background-color: red;"></canvas>
+    <canvas id="canvas" width="500" height="500" style="background-color: rgb(22, 22, 22);"></canvas>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
         var socket=io();
@@ -17,15 +17,29 @@
         const locate= {pos_x:0,pos_y:0}
         const ctx=document.querySelector("#canvas").getContext("2d")
 
-        socket.on("all",(all_player)=>{
+        socket.on("all",(all_player,pos_fruit)=>{
+            ctx.clearRect(0,0,canvas.width,canvas.height)
+            drawFruit(pos_fruit.f_x,pos_fruit.f_y)
 
             let id=Object.values(all_player)
             let a;
-            ctx.clearRect(0,0,canvas.width,canvas.height)
-            for(a=0;a<id.length;a++){                
+            var eat=false
+
+            for(a=0;a<id.length;a++){ 
+                if(id[a].pos_x == pos_fruit.f_x && id[a].pos_y == pos_fruit.f_y){
+                    eat=true
+                }
+                console.log(eat)
+                socket.emit("eat",eat)               
                 draw(id[a].pos_x,id[a].pos_y)
             }
         })
+        function drawFruit(x,y){
+            ctx.fillStyle = "rgb(0, 200, 0)";
+            ctx.fillRect(x, y, 10, 10);
+
+            requestAnimationFrame(drawFruit)
+        }
         function draw(x,y){
             
             ctx.fillStyle = "rgb(200, 0, 0)";
