@@ -8,39 +8,47 @@
 </head>
 <body>
     <h1>GAME</h1>
-    <canvas id="canvas" width="100" height="100" style="background-color: red;"></canvas>
+    <canvas id="canvas" width="500" height="500" style="background-color: red;"></canvas>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
         var socket=io();
-        const player_x=document.querySelector("#player_x")
-        const player_y=document.querySelector("#player_y")
+        
 
-        const locate={player_x:0,player_y:0}
+        const locate= {pos_x:0,pos_y:0}
         const ctx=document.querySelector("#canvas").getContext("2d")
 
-        function draw(){
+        socket.on("all",(all_player)=>{
+
+            let id=Object.values(all_player)
+            let a;
             ctx.clearRect(0,0,canvas.width,canvas.height)
+            for(a=0;a<id.length;a++){                
+                draw(id[a].pos_x,id[a].pos_y)
+            }
+        })
+        function draw(x,y){
+            
             ctx.fillStyle = "rgb(200, 0, 0)";
-            ctx.fillRect(locate.player_x, locate.player_y, 10, 10);
+            ctx.fillRect(x, y, 10, 10);
 
             requestAnimationFrame(draw)  
         }
         document.addEventListener("keypress",(key)=>{
             switch (key.key){
                 case "a":{
-                    locate.player_x=locate.player_x-10;
+                    locate.pos_x=locate.pos_x-10;
                     break;
                 }
                 case "d":{
-                    locate.player_x=locate.player_x+10;
+                    locate.pos_x=locate.pos_x+10;
                     break;
                 }
                 case "w":{
-                    locate.player_y=locate.player_y-10;
+                    locate.pos_y=locate.pos_y-10;
                     break;
                 }
                 case "s":{
-                    locate.player_y=locate.player_y+10;
+                    locate.pos_y=locate.pos_y+10;
                     break;
                 }
             }

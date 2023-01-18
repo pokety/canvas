@@ -10,13 +10,19 @@ app.get("/",(req,res)=>{
     
     res.sendFile(path.join(__dirname + "/index.html"))
 })
+
+var pos_player={}
 io.on("connection",(socket)=>{
     console.log('connectado: '+socket.id)
     
     socket.on("enviar",(msg)=>{
-        console.log(socket.id)
+        Object.assign(pos_player,{[socket.id]:msg})
+        io.emit('all',pos_player);
     })
-    socket.on('disconnect',()=>{console.log("disconectado: "+socket.id)})
+    socket.on('disconnect',()=>{
+        console.log("disconectado: "+socket.id);
+        delete pos_player[socket.id]
+    })
 
 })
 
