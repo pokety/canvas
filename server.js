@@ -2,7 +2,6 @@ const express=require("express");
 const app=express();
 const server=require("http").createServer(app);
 const path=require('path');
-const { emit } = require("process");
 const io=require("socket.io")(server);
 require("dotenv").config()
 app.use('public',express.static('/public'))
@@ -24,27 +23,36 @@ var pos_player={}
 
 io.on("connection",(socket)=>{
     console.log('connectado: '+socket.id)
-   
+    
+
+    var statu=false
+    var randF={f_x:getRandom10(0,190),f_y:getRandom10(0,190)}
+    
+
     socket.on("enviar",(locate)=>{
-        
-        var pos_fruit={f_x:50,f_y:50}
+        const randFe={f_x:getRandom10(0,190),f_y:getRandom10(0,190)}
         Object.assign(pos_player,{[socket.id]:locate})
 
+        let id_player=Object.keys(pos_player)
+        let id_pos=Object.values(pos_player)
 
-        let id=Object.values(pos_player)
-            let a;
+        for(let a=0;a<id_pos.length;a++){
 
-        for(a=0;a<id.length;a++){                 
-            if(id[a].pos_x == pos_fruit.f_x && id[a].pos_y == pos_fruit.f_y){
-                console.log(pos_fruit)
-                io.emit('eat',{f_x:getRandom10(0,490),f_y:getRandom10(0,490)})
+            if(id_pos[a].pos_x == randF.f_x && id_pos[a].pos_y == randF.f_y){
+                statu=true
             }
-            
         }
-        
-        //socket.broadcast.emit('all',pos_player,pos_fruit)
-        io.emit('all',pos_player,pos_fruit);
+        if(statu==true){
+            statu=false
+            console.log(randF)
+            randF=randFe
+            console.log(randF)
+        }
+
+        io.emit('all',pos_player,randFe);
+        //socket.broadcast.emit('all',pos_player,randF)
     })
+    
     socket.on('disconnect',()=>{
         console.log("disconectado: "+socket.id);
         delete pos_player[socket.id]

@@ -7,37 +7,19 @@
     <title>Game</title>
 </head>
 <body>
-    <h1>GAME</h1>
-    <canvas id="canvas" width="500" height="500" style="background-color: rgb(22, 22, 22);"></canvas>
+    <canvas id="canvas" width="200" height="200" style="background-color: rgb(22, 22, 22);"></canvas>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
         var socket=io();
         
-        // //////////////random
-        // function getRandomInt(min, max) {
-        //     return Math.floor(Math.random() * (max - min + 1) + min);
-        // }
-        // function getRandom10(min, max) {
-        //     return getRandomInt(min / 10, max / 10) * 10;
-        // }
-        // ////////////////
-
-        var locate= {pos_x:0,pos_y:0}
         const ctx=document.querySelector("#canvas").getContext("2d")
         
-        socket.on("eat",(pos_fruit)=>{
-            ctx.clearRect(0,0,canvas.width,canvas.height)
-            let id=Object.values(pos_fruit)
-            console.log(id[0])
-            drawF(id[0],id[1])
-        })
 
-        socket.on("all",function fn(all_player,pos_fruit){
+        socket.on("all",(all_player,randF)=>{
             ctx.clearRect(0,0,canvas.width,canvas.height)
-            
+            drawF(randF.f_x,randF.f_y)
             let id=Object.values(all_player)
             let a;
-
             for(a=0;a<id.length;a++){ 
                 draw(id[a].pos_x,id[a].pos_y)
             }
@@ -46,17 +28,21 @@
             ctx.fillStyle = "rgb(0, 200, 0)";
             ctx.fillRect(fx, fy, 10, 10);
             requestAnimationFrame(drawF) 
-
         }
 
         function draw(px,py){     
             ctx.fillStyle = "rgb(200, 0, 0)";
             ctx.fillRect(px, py, 10, 10);
-
             requestAnimationFrame(draw)  
         }
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        function getRandom10(min, max) {
+            return getRandomInt(min / 10, max / 10) * 10;
+        }
 
-        
+        var locate= {pos_x:0,pos_y:0}
         document.addEventListener("keypress",(key)=>{
             switch (key.key){
                 case "a":{
@@ -78,8 +64,7 @@
             }
             socket.emit('enviar',locate)
             
-        })
-         
+        })         
     </script>
 </body>
 </html>
